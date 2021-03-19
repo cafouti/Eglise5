@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class Character : MonoBehaviour
 {
-    private bool monstreEtat = true;
+    private bool monstreEtat = false;
     public Vector3 mouvement;
 
     public float speed;
@@ -35,12 +35,11 @@ public class Character : MonoBehaviour
     public RectTransform curseur;
     private Vector2 xOffsetCurseur;
 
-    public int fadeTime;
+    public float fadeTime;
     public Image blackFade;
     public Transform respawnPoint;
     public Transform respawnPointStart;
     private bool death = false;
-    private bool noDeath = false;
 
     public GameObject gbF;
     public GameObject gbM;
@@ -56,7 +55,10 @@ public class Character : MonoBehaviour
         xOffsetCurseur = curseur.anchoredPosition ;
         fille = new float[4] { speedF, sautF, masseF, gravityF };
         monstre = new float[4] { speedM, sautM, masseM, gravityM };
-        ChangeGB(gbM, 0, monstre);
+        ChangeGB(gbF, 0, fille);
+        energie = 1;
+        Vector2 move = new Vector2(energie, 0);
+        curseur.anchoredPosition = xOffsetCurseur + 75 * move;
         StartCoroutine("fadeOut");
     }
 
@@ -125,7 +127,7 @@ public class Character : MonoBehaviour
             {
                 energie += increment * 5 * nbPush;
             }
-            nbPush -= 2;
+            nbPush -= 1;
         }
     }
 
@@ -190,7 +192,7 @@ public class Character : MonoBehaviour
     {
         if(!monstreEtat)
         {
-            energie -= increment;
+            energie -= increment * Time.deltaTime;
         }        
         
         Vector2 move = new Vector2(energie, 0);
@@ -220,7 +222,7 @@ public class Character : MonoBehaviour
     {
         death = true;
         blackFade.CrossFadeAlpha(1,fadeTime,false);
-        yield return new WaitForSeconds(fadeTime);
+        yield return new WaitForSeconds(fadeTime*1.5f);
         Respawn(respawnPoint);
         StartCoroutine("fadeOut");
     }

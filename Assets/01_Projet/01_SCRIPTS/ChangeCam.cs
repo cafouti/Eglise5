@@ -16,8 +16,7 @@ public class ChangeCam : MonoBehaviour
     {
         if(other.gameObject.name == "Fille(Clone)" || other.gameObject.name == "Monstre(Clone)")
         {
-            Debug.Log("starfoula");
-            cam.offset = offset;
+            cam.ChangeOffset(offset);
         }
     }
 }

@@ -13,14 +13,15 @@ public class Zigouilleur : MonoBehaviour
     private float offsetx = 0.2f;
     private bool droite;
     private bool startDroite = false;
+    private bool canMove = true;
 
-    private GameObject character;
-    private CharacterController controller;
+    private CharacterController controller;    
     private Vector3 mouvement;
     private BoxCollider detectionZone;
     private Transform player;
 
     private Vector3 start;
+    private Quaternion startRot; 
     public Transform destination;
 
     ///////////////////////Initialisation/////////////////////
@@ -32,10 +33,11 @@ public class Zigouilleur : MonoBehaviour
             droite = startDroite;
         }
         
-        start = transform.position;        
-        character = gameObject;
-        controller = GetComponent<CharacterController>();
+        start = transform.position;
+        startRot = transform.localRotation;
+        controller = gameObject.GetComponent<CharacterController>();
         detectionZone = GetComponent<BoxCollider>();
+        //Remake();
     }
 
     ///////////////////////Boucle/////////////////////
@@ -68,14 +70,17 @@ public class Zigouilleur : MonoBehaviour
             Rotate();
         }
 
-        controller.Move(mouvement * Time.deltaTime);
+        if(canMove)
+        {
+            controller.Move(mouvement * Time.deltaTime);
+        }
     }
     
     /////////////////////////Methode classe//////////////////////////
 
     void Rotate()
     {
-        character.transform.Rotate(0,180,0);
+        transform.Rotate(0,180,0);
         droite = !droite;
     }
 
@@ -83,11 +88,11 @@ public class Zigouilleur : MonoBehaviour
     {
         if(player != null)
         {
-            if (character.transform.position.x > player.transform.position.x)
+            if (transform.position.x > player.transform.position.x)
             {
                 mouvement.x = -speed;
             }
-            else if (character.transform.position.x < player.transform.position.x)
+            else if (transform.position.x < player.transform.position.x)
             {
                 mouvement.x = speed;
             }
@@ -116,6 +121,17 @@ public class Zigouilleur : MonoBehaviour
         }
     }
 
+    public Zigouilleur Remake()
+    {
+        Zigouilleur newZig = Instantiate(this, start, startRot);
+        return newZig;
+    }
+
+    public void Suppr()
+    {
+        Destroy(this.gameObject);
+    }
+
     /////////////////////////Trigger/////////////////////
 
     private void OnTriggerEnter(Collider other)
@@ -136,6 +152,16 @@ public class Zigouilleur : MonoBehaviour
         if (other.gameObject.name == "Fille(Clone)" || other.gameObject.name == "Monstre(Clone)")
         {
             StartCoroutine("PerteVue");
+        }
+    }
+
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        if (hit.gameObject.name == "Fille(Clone)" || hit.gameObject.name == "Monstre(Clone)")
+        {
+            hit.gameObject.GetComponentInParent<Character>().StartCoroutine("fadeIn");
+            canMove = false;
+            //character.StartCoroutine("fadeIn");
         }
     }
 

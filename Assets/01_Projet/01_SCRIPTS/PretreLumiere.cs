@@ -14,24 +14,25 @@ public class PretreLumiere : MonoBehaviour
     public Transform lookUpStop;
     public Transform lookDownStart;
     public Transform lookDownStop;
+    private Vector3 start;
+    private Quaternion startRot;
     public float porte;
+    private bool canMove = true;
 
     // Start is called before the first frame update
     void Start()
     {
-
+        start = transform.position;
+        startRot = transform.localRotation;
     }
 
     void FixedUpdate()
     {
-        Detection();
-        Rotate();        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        if(canMove)
+        {
+            Detection();
+            Rotate();
+        }               
     }
 
     void Rotate()
@@ -61,7 +62,8 @@ public class PretreLumiere : MonoBehaviour
             {
                 if (hit.collider.name == "Fille(Clone)" || hit.collider.name == "Monstre(Clone)")
                 {
-                    Debug.Log("juste master du code");
+                    hit.transform.gameObject.GetComponentInParent<Character>().StartCoroutine("fadeIn");
+                    canMove = false;
                 }
             }
 
@@ -69,10 +71,22 @@ public class PretreLumiere : MonoBehaviour
             {
                 if (hit.collider.name == "Fille(Clone)" || hit.collider.name == "Monstre(Clone)")
                 {
-                    Debug.Log("juste master du code");
+                    hit.transform.GetComponentInParent<Character>().StartCoroutine("fadeIn");
+                    canMove = false;
                 }
             }
         }
+    }
+
+    public PretreLumiere Remake()
+    {
+        PretreLumiere newZig = Instantiate(this, start, startRot);
+        return newZig;
+    }
+
+    public void Suppr()
+    {
+        Destroy(this.gameObject);
     }
 }
 
