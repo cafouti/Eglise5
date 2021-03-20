@@ -8,29 +8,29 @@ public class Checkpoint : MonoBehaviour
 
     public Zigouilleur[] zigouilleur;
     public PretreLumiere[] pretreLumiere;
-    public GameObject gb;
-    public Zigouilleur zig;
+    public PlancheDestruction[] planche;
+    public GameObject[] gbPlanche;
 
     private void Start()
     {
-        zig = gb.GetComponent<Zigouilleur>();
+        planche = new PlancheDestruction[gbPlanche.Length]; 
+        for(int i = 0; i<gbPlanche.Length; i++)
+        {
+            planche[i] = gbPlanche[i].GetComponentInChildren(typeof(PlancheDestruction)) as PlancheDestruction;
+        }
     }
 
     void changeRespawn()
     {
         character.respawnPoint = transform;
-        /*Zigouilleur death = zig; 
-        gb = zig.Remake().gameObject;
-        zig = gb.GetComponent<Zigouilleur>();
-        zig.name = death.gameObject.name;
-        zig.enabled = true;
-        death.Suppr();*/
-        ResetAssets();
+        character.checkpoint = this;
     }
 
-    void ResetAssets()
+    public void ResetAssets()
     {
-        for(int i=0; i<zigouilleur.Length; i++)
+        GameObject gb;
+
+        for (int i=0; i<zigouilleur.Length; i++)
         {
             Zigouilleur death = zigouilleur[i];
             gb = zigouilleur[i].Remake().gameObject;
@@ -49,6 +49,16 @@ public class Checkpoint : MonoBehaviour
             pretreLumiere[i].enabled = true;
             death.Suppr();
         }
+
+        /*for (int i = 0; i < planche.Length; i++)
+        {
+            PlancheDestruction death = planche[i];            
+            gb = planche[i].Remake();
+            planche[i] = gb.GetComponent<PlancheDestruction>();
+            planche[i].gameObject.name = death.gameObject.name;
+            planche[i].enabled = true;
+            death.Suppr();
+        }*/
     }
 
     private void OnTriggerEnter(Collider other)

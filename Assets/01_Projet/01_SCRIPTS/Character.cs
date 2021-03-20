@@ -39,6 +39,7 @@ public class Character : MonoBehaviour
     public Image blackFade;
     public Transform respawnPoint;
     public Transform respawnPointStart;
+    public Checkpoint checkpoint;
     private bool death = false;
 
     public GameObject gbF;
@@ -230,5 +231,6 @@ public class Character : MonoBehaviour
     void Respawn(Transform destination)
     {
         controller.transform.position = destination.position;
+        checkpoint.ResetAssets();
     }
 }

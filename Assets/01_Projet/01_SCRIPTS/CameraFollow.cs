@@ -23,7 +23,6 @@ public class CameraFollow : MonoBehaviour
         Vector3 positionFutur = joueur.position + offset;
         Vector3 positionTransit = Vector3.Lerp(transform.position, positionFutur, vitesse*Time.deltaTime) ;
         transform.position = positionTransit;
-        Debug.Log("Transform = " + (joueur.position.x + offset.x));
     }    
 
     public void ChangeOffset(Vector3 newOffset)
