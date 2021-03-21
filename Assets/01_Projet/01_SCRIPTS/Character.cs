@@ -18,6 +18,7 @@ public class Character : MonoBehaviour
     private int nbPush = 0;
     public bool jumping = false;
     public bool canTrans = true;
+    private bool droite = true;
 
     public float speedF;
     public float sautF;
@@ -48,6 +49,8 @@ public class Character : MonoBehaviour
     private float[] fille;
     private float[] monstre;
 
+    private Animator animator;
+
     /////////////////////////////////////////////////////////////////////////////////////////////
 
     // Start is called before the first frame update
@@ -68,6 +71,14 @@ public class Character : MonoBehaviour
     {
         //Recuperation de la valeur de la touche de deplacement
         float x = Input.GetAxis("Horizontal");
+        if(x!=0 && animator)
+        {
+            animator.SetBool("Walking", true);
+        }
+        else if(x==0 && animator)
+        {
+            animator.SetBool("Walking", false);
+        }
 
         if(!death)
         {
@@ -76,7 +87,7 @@ public class Character : MonoBehaviour
             //Maintien au sol
             if (controller.isGrounded && mouvement.y < 0)
             {
-                mouvement.y = masse;
+                mouvement.y = masse;                
             }
 
             //Gestion saut
@@ -87,7 +98,7 @@ public class Character : MonoBehaviour
             Jump();
 
             //Gestion orientation perso
-            //Rotate();
+            Rotate();
 
             //Gestion transformation
             if (canTrans)
@@ -148,11 +159,25 @@ public class Character : MonoBehaviour
         Destroy(character);
         character = Instantiate(gb, spawn, Quaternion.identity, transform);
         controller = character.GetComponent<CharacterController>();
+        if(gb == gbF)
+        {
+            character.transform.Rotate(0, 90, 0);
+        }
         cam.joueur = character.transform;
         speed = stats[0];
         saut = stats[1];
         masse = stats[2];
         gravity = stats[3];
+        if(character.GetComponent<Animator>())
+        {
+            animator = character.GetComponent<Animator>();
+        }        
+
+        if(!droite)
+        {
+            character.transform.Rotate(0, 180, 0);
+            droite = false;
+        }
     }
 
     void Jump()
@@ -161,6 +186,7 @@ public class Character : MonoBehaviour
         {
             mouvement.y = Mathf.Sqrt(saut * -2 * gravity);
             jumping = true;
+            animator.SetBool("Jumping", true);
         }
     }
 
@@ -174,18 +200,23 @@ public class Character : MonoBehaviour
         if (controller.isGrounded)
         {
             this.jumping = false;
+            animator.SetBool("Jumping", false);
         }
     }
 
     void Rotate()
     {
-        if (cam.droite && mouvement.x < 0)
+        if (mouvement.x < 0 && droite)
         {
             character.transform.Rotate(0, 180, 0);
+            droite = false;
+            Debug.Log("turn");
         }
-        else if (!cam.droite && mouvement.x > 0)
+        else if (mouvement.x > 0 && !droite)
         {
             character.transform.Rotate(0, -180, 0);
+            droite = true;
+            Debug.Log("turn");
         }
     }
 
