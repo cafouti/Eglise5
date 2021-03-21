@@ -87,7 +87,7 @@ public class Character : MonoBehaviour
             Jump();
 
             //Gestion orientation perso
-            Rotate();
+            //Rotate();
 
             //Gestion transformation
             if (canTrans)
