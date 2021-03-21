@@ -58,3 +58,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   character: {fileID: 8679195381127960300, guid: 5a4aeeaff5bc88947b63d091fbe90098, type: 3}
+  zigouilleur: []
+  pretreLumiere: []
+  planche: []
+  gbPlanche: []
+  planchePrefab: {fileID: 4298375133025436442, guid: 126ae96f31abb1640a7a39dae0ebde8c, type: 3}

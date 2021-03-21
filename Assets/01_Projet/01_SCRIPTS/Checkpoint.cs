@@ -8,15 +8,33 @@ public class Checkpoint : MonoBehaviour
 
     public Zigouilleur[] zigouilleur;
     public PretreLumiere[] pretreLumiere;
-    public PlancheDestruction[] planche;
+    public Vector3[] planche;
+    public Quaternion[] plancheRot;
+    public Vector3[] scalePlanche;
+    public Vector3[] hitboxPlanche;
+    public Quaternion[] hitboxPlancheRot;
+    public Vector3[] hitboxPlancheScale;
     public GameObject[] gbPlanche;
+    
+    public GameObject planchePrefab;
 
     private void Start()
     {
-        planche = new PlancheDestruction[gbPlanche.Length]; 
-        for(int i = 0; i<gbPlanche.Length; i++)
+        scalePlanche = new Vector3[gbPlanche.Length];
+        planche = new Vector3[gbPlanche.Length];
+        plancheRot = new Quaternion[gbPlanche.Length];
+        hitboxPlanche = new Vector3[gbPlanche.Length];
+        hitboxPlancheRot = new Quaternion[gbPlanche.Length];
+        hitboxPlancheScale = new Vector3[gbPlanche.Length];
+
+        for (int i = 0; i<gbPlanche.Length; i++)
         {
-            planche[i] = gbPlanche[i].GetComponentInChildren(typeof(PlancheDestruction)) as PlancheDestruction;
+            scalePlanche[i] = gbPlanche[i].transform.localScale;
+            planche[i] = gbPlanche[i].transform.position;
+            plancheRot[i] = gbPlanche[i].transform.localRotation;
+            hitboxPlanche[i] = gbPlanche[i].GetComponentInChildren<Transform>().position;
+            hitboxPlancheRot[i] = gbPlanche[i].GetComponentInChildren<Transform>().localRotation;
+            hitboxPlancheScale[i] = gbPlanche[i].GetComponentInChildren<Transform>().localScale;
         }
     }
 
@@ -50,15 +68,16 @@ public class Checkpoint : MonoBehaviour
             death.Suppr();
         }
 
-        /*for (int i = 0; i < planche.Length; i++)
+        for (int i = 0; i < planche.Length; i++)
         {
-            PlancheDestruction death = planche[i];            
-            gb = planche[i].Remake();
-            planche[i] = gb.GetComponent<PlancheDestruction>();
-            planche[i].gameObject.name = death.gameObject.name;
-            planche[i].enabled = true;
-            death.Suppr();
-        }*/
+            gbPlanche[i] = Instantiate(planchePrefab.gameObject, planche[i], plancheRot[i]);
+            gbPlanche[i].transform.localScale = scalePlanche[i];
+            gbPlanche[i].transform.localRotation = plancheRot[i];
+            Transform hitboxTransform = gbPlanche[i].GetComponentInChildren<Transform>();
+            hitboxTransform.position = hitboxPlanche[i];
+            hitboxTransform.localRotation = hitboxPlancheRot[i];
+            hitboxTransform.localScale = hitboxPlancheScale[i];
+        }
     }
 
     private void OnTriggerEnter(Collider other)

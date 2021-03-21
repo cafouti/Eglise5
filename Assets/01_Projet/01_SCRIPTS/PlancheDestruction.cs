@@ -24,12 +24,12 @@ public class PlancheDestruction : MonoBehaviour
 
     public GameObject Remake()
     {
-        GameObject newZig = Instantiate(transform.parent.gameObject, start, startRot);
+        GameObject newZig = Instantiate(planche, start, startRot);
         return newZig;
     }
 
     public void Suppr()
     {
-        Destroy(this.gameObject);
+        Destroy(this.transform.parent.gameObject);
     }
 }

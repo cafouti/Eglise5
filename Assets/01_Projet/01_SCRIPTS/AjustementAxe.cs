@@ -25,12 +25,10 @@ public class AjustementAxe : MonoBehaviour
         if (character.controller.transform.position.z <= destination.position.z && forward)
         {
             character.controller.Move(new Vector3(0, 0,speed) * Time.deltaTime);
-            Debug.Log("moving forward");
         }
         else if(character.controller.transform.position.z >= destination.position.z && !forward)
         {
             character.controller.Move(new Vector3(0, 0, -speed) * Time.deltaTime);
-            Debug.Log("moving backward");
         }
         else
         {
