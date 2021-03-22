@@ -78,7 +78,6 @@ public class Character : MonoBehaviour
         if (!death)
         {
             mouvement.x = x * speed;
-            Debug.Log("speed animator = " + animator.speed);
             animator.speed = 1;
 
             //Maintien au sol
@@ -91,7 +90,6 @@ public class Character : MonoBehaviour
             if (jumping)
             {
                 EndJump();
-                animator.SetBool("Jumping", false);
             }
             Jump();
 
@@ -134,14 +132,7 @@ public class Character : MonoBehaviour
         {
             animator.speed = 0;
         }
-
-        if(animator)
-        {
-            //Debug.Log("inAir = " + animator.GetBool("Jumping"));
-        }
         
-        
-
         if (Input.GetKeyDown(KeyCode.Keypad0) && !death)
         {            
             StartCoroutine("fadeIn");
@@ -203,6 +194,7 @@ public class Character : MonoBehaviour
         saut = stats[1];
         masse = stats[2];
         gravity = stats[3];
+
         if(character.GetComponent<Animator>())
         {
             animator = character.GetComponent<Animator>();
@@ -221,7 +213,7 @@ public class Character : MonoBehaviour
         {
             mouvement.y = Mathf.Sqrt(saut * -2 * gravity);
             jumping = true;
-            animator.SetBool("Jumping", true);
+            animator.Play("Saut 1", -1, 0);
         }
     }
 
