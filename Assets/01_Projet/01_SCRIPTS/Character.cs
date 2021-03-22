@@ -59,7 +59,7 @@ public class Character : MonoBehaviour
         xOffsetCurseur = curseur.anchoredPosition ;
         fille = new float[4] { speedF, sautF, masseF, gravityF };
         monstre = new float[4] { speedM, sautM, masseM, gravityM };
-        ChangeGB(gbF, 0, fille);
+        ChangeGB(gbF, 1, fille);
         energie = 1;
         Vector2 move = new Vector2(energie, 0);
         curseur.anchoredPosition = xOffsetCurseur + 75 * move;
@@ -71,16 +71,11 @@ public class Character : MonoBehaviour
     {
         //Recuperation de la valeur de la touche de deplacement
         float x = Input.GetAxis("Horizontal");
-        if(x!=0 && animator)
-        {
-            animator.SetBool("Walking", true);
-        }
-        else if(x==0 && animator)
-        {
-            animator.SetBool("Walking", false);
-        }
+        
 
-        if(!death)
+        
+
+        if (!death)
         {
             mouvement.x = x * speed;
 
@@ -105,14 +100,41 @@ public class Character : MonoBehaviour
             {
                 Transformation();
                 Energie();
-            }                
+            }            
 
             //Gestion gravité
             mouvement.y += gravity * Time.deltaTime;
 
             //Application mouvement
             controller.Move(mouvement * Time.deltaTime);
+
+            if (x != 0 && animator)
+            {
+                animator.SetBool("Walking", true);
+            }
+            else if (x == 0 && animator)
+            {
+                animator.SetBool("Walking", false);
+            }
+
+            if (!controller.isGrounded && animator)
+            {
+                animator.SetBool("InAir", true);
+                
+            }
+            else
+            {
+                animator.SetBool("InAir", false);
+                //Debug.Log("InAir set off");
+            }
         }
+
+        if(animator)
+        {
+            //Debug.Log("inAir = " + animator.GetBool("Jumping"));
+        }
+        
+        
 
         if (Input.GetKeyDown(KeyCode.Keypad0) && !death)
         {            
@@ -146,8 +168,13 @@ public class Character : MonoBehaviour
     void ChangeGB(GameObject gb, float decalage, float[] stats)
     {
         Vector3 spawn;
+        if (gb == gbF)
+        {
+            decalage = 1;
+        }
 
-        if (!character)
+
+            if (!character)
         {
             spawn = transform.position + new Vector3(0, decalage, 0);
         }
@@ -161,8 +188,10 @@ public class Character : MonoBehaviour
         controller = character.GetComponent<CharacterController>();
         if(gb == gbF)
         {
-            character.transform.Rotate(0, 90, 0);
+            
+            character.transform.localScale = new Vector3(0.7f,0.7f,0.7f);
         }
+        character.transform.Rotate(0, 90, 0);
         cam.joueur = character.transform;
         speed = stats[0];
         saut = stats[1];
@@ -193,6 +222,10 @@ public class Character : MonoBehaviour
     public void CancelJump()
     {
         mouvement.y = gravity * Time.deltaTime;
+        animator.SetBool("ColisionTete", true);
+        animator.SetBool("InAir", true);
+        Debug.Log("colisiontete = " + animator.GetBool("ColisionTete"));
+        animator.SetBool("ColisionTete", false);
     }
 
     public void EndJump()
@@ -210,13 +243,11 @@ public class Character : MonoBehaviour
         {
             character.transform.Rotate(0, 180, 0);
             droite = false;
-            Debug.Log("turn");
         }
         else if (mouvement.x > 0 && !droite)
         {
             character.transform.Rotate(0, -180, 0);
             droite = true;
-            Debug.Log("turn");
         }
     }
 
