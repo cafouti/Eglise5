@@ -78,6 +78,8 @@ public class Character : MonoBehaviour
         if (!death)
         {
             mouvement.x = x * speed;
+            Debug.Log("speed animator = " + animator.speed);
+            animator.speed = 1;
 
             //Maintien au sol
             if (controller.isGrounded && mouvement.y < 0)
@@ -89,6 +91,7 @@ public class Character : MonoBehaviour
             if (jumping)
             {
                 EndJump();
+                animator.SetBool("Jumping", false);
             }
             Jump();
 
@@ -125,8 +128,11 @@ public class Character : MonoBehaviour
             else
             {
                 animator.SetBool("InAir", false);
-                //Debug.Log("InAir set off");
             }
+        }
+        else
+        {
+            animator.speed = 0;
         }
 
         if(animator)
@@ -223,7 +229,6 @@ public class Character : MonoBehaviour
     {
         mouvement.y = gravity * Time.deltaTime;
         animator.SetBool("ColisionTete", true);
-        animator.SetBool("InAir", true);
         Debug.Log("colisiontete = " + animator.GetBool("ColisionTete"));
         animator.SetBool("ColisionTete", false);
     }
@@ -233,7 +238,6 @@ public class Character : MonoBehaviour
         if (controller.isGrounded)
         {
             this.jumping = false;
-            animator.SetBool("Jumping", false);
         }
     }
 
@@ -287,6 +291,7 @@ public class Character : MonoBehaviour
         blackFade.CrossFadeAlpha(1,fadeTime,false);
         yield return new WaitForSeconds(fadeTime*1.5f);
         Respawn(respawnPoint);
+        animator.Play("Idle");
         StartCoroutine("fadeOut");
     }
 
