@@ -878,7 +878,7 @@ GameObject:
   - component: {fileID: 7877991226639676455}
   - component: {fileID: 3785624566883928838}
   m_Layer: 0
-  m_Name: SM_PetiteFille@Bashful
+  m_Name: Fille
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -930,13 +930,13 @@ CharacterController:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Height: 1.2
+  m_Height: 1.15
   m_Radius: 0.19
   m_SlopeLimit: 45
   m_StepOffset: 0.3
-  m_SkinWidth: 0.08
+  m_SkinWidth: 0.0001
   m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 0.6, z: 0}
+  m_Center: {x: 0, y: 0.575, z: 0}
 --- !u!114 &3785624566883928838
 MonoBehaviour:
   m_ObjectHideFlags: 0

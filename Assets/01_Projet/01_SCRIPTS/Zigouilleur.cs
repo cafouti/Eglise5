@@ -7,7 +7,6 @@ public class Zigouilleur : MonoBehaviour
     //////////////////////Variables//////////////////////////
     public float speed;
     public float masse;
-    private float gravity;
     private bool poursuite = false;
     private bool retour = false;
     private float offsetx = 0.2f;
@@ -24,6 +23,8 @@ public class Zigouilleur : MonoBehaviour
     private Quaternion startRot; 
     public Transform destination;
 
+    private Animator animator;
+
     ///////////////////////Initialisation/////////////////////
     void Start()
     {
@@ -37,7 +38,9 @@ public class Zigouilleur : MonoBehaviour
         startRot = transform.localRotation;
         controller = gameObject.GetComponent<CharacterController>();
         detectionZone = GetComponent<BoxCollider>();
-        //Remake();
+        animator = GetComponent<Animator>();
+        animator.speed = 1;
+        animator.Play("EO1_Idle");
     }
 
     ///////////////////////Boucle/////////////////////
@@ -55,7 +58,8 @@ public class Zigouilleur : MonoBehaviour
         else if(retour)
         {
             Retour();
-            if(!retour)
+            
+            if (!retour)
             {
                 mouvement.x = 0;
             }
@@ -74,6 +78,7 @@ public class Zigouilleur : MonoBehaviour
         {
             controller.Move(mouvement * Time.deltaTime);
         }
+        //Debug.Log("retour = " + retour);
     }
     
     /////////////////////////Methode classe//////////////////////////
@@ -118,6 +123,7 @@ public class Zigouilleur : MonoBehaviour
             }
 
             retour = false;
+            animator.Play("EO1_Idle");
         }
     }
 
@@ -143,6 +149,7 @@ public class Zigouilleur : MonoBehaviour
             poursuite = true;
             StopCoroutine("PerteVue");
             StopCoroutine("PerteAgro");
+            animator.Play("EO1_Course");
             retour = false;
         }
     }
@@ -161,6 +168,7 @@ public class Zigouilleur : MonoBehaviour
         {
             hit.gameObject.GetComponentInParent<Character>().StartCoroutine("fadeIn");
             canMove = false;
+            animator.speed = 0;
             //character.StartCoroutine("fadeIn");
         }
     }
@@ -177,7 +185,9 @@ public class Zigouilleur : MonoBehaviour
 
     IEnumerator PerteAgro()
     {
-        yield return new WaitForSeconds(1);
+        animator.Play("EO1_Recherche");
+        yield return new WaitForSeconds(3);
+        animator.Play("EO1_Marche");
         retour = true;
     }
 }

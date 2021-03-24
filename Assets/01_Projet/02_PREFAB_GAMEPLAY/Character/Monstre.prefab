@@ -293,7 +293,7 @@ GameObject:
   - component: {fileID: 7344645800157837417}
   - component: {fileID: 2311991385098007142}
   m_Layer: 0
-  m_Name: SM_Monstre@Breathing Idle
+  m_Name: Monstre
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -349,7 +349,7 @@ CharacterController:
   m_Radius: 0.47
   m_SlopeLimit: 45
   m_StepOffset: 0.3
-  m_SkinWidth: 0.08
+  m_SkinWidth: 0.0001
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0.7, z: 0}
 --- !u!114 &2311991385098007142

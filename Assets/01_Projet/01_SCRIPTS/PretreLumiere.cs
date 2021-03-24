@@ -51,14 +51,14 @@ public class PretreLumiere : MonoBehaviour
         for (float i = -1; i <= 1; i++)
         {
             lookUpStart.transform.localRotation = Quaternion.Euler(0, i * angleVision + initRotY, 0);
-            Debug.DrawRay(lookUpStart.position, lookUpStart.transform.TransformDirection(Vector3.forward) * porte, Color.yellow);            
+            Debug.DrawRay(lookUpStart.position, lookUpStart.transform.TransformDirection(Vector3.forward*-1) * porte, Color.yellow);            
             lookDownStart.transform.localRotation = Quaternion.Euler(0, i * angleVision + initRotY, 0);
-            Debug.DrawRay(lookDownStart.position, lookDownStart.transform.TransformDirection(Vector3.forward) * porte, Color.yellow);
+            Debug.DrawRay(lookDownStart.position, lookDownStart.transform.TransformDirection(Vector3.forward * -1) * porte, Color.yellow);
 
             RaycastHit hit;
 
             // Does the ray intersect any objects excluding the player layer
-            if (Physics.Raycast(lookDownStart.transform.position, lookDownStart.transform.TransformDirection(Vector3.forward), out hit, porte))
+            if (Physics.Raycast(lookDownStart.transform.position, lookDownStart.transform.TransformDirection(Vector3.forward * -1), out hit, porte))
             {
                 if (hit.collider.name == "Fille(Clone)" || hit.collider.name == "Monstre(Clone)")
                 {
@@ -67,7 +67,7 @@ public class PretreLumiere : MonoBehaviour
                 }
             }
 
-            if (Physics.Raycast(lookUpStart.transform.position, lookUpStart.transform.TransformDirection(Vector3.forward), out hit, porte))
+            if (Physics.Raycast(lookUpStart.transform.position, lookUpStart.transform.TransformDirection(Vector3.forward * -1), out hit, porte))
             {
                 if (hit.collider.name == "Fille(Clone)" || hit.collider.name == "Monstre(Clone)")
                 {

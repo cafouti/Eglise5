@@ -19,6 +19,7 @@ public class Character : MonoBehaviour
     public bool jumping = false;
     public bool canTrans = true;
     private bool droite = true;
+    private bool inairPause;
 
     public float speedF;
     public float sautF;
@@ -38,6 +39,9 @@ public class Character : MonoBehaviour
 
     public float fadeTime;
     public Image blackFade;
+    public Text titre;
+    private bool menu_accueil = true;
+    public GameObject pause;
     public Transform respawnPoint;
     public Transform respawnPointStart;
     public Checkpoint checkpoint;
@@ -70,18 +74,24 @@ public class Character : MonoBehaviour
     void Update()
     {
         //Recuperation de la valeur de la touche de deplacement
-        float x = Input.GetAxis("Horizontal");
-        
-
-        
+        float x = Input.GetAxis("Horizontal");       
 
         if (!death)
         {
             mouvement.x = x * speed;
             animator.speed = 1;
 
-            //Maintien au sol
-            if (controller.isGrounded && mouvement.y < 0)
+            if (Input.GetJoystickNames().Length > 0)
+            {
+                Debug.Log("controller connecté");
+            }
+            else
+            {
+                Debug.Log("controller non connecté");
+            }
+
+                //Maintien au sol
+                if (controller.isGrounded && mouvement.y < 0)
             {
                 mouvement.y = masse;                
             }
@@ -133,10 +143,37 @@ public class Character : MonoBehaviour
             animator.speed = 0;
         }
         
-        if (Input.GetKeyDown(KeyCode.Keypad0) && !death)
-        {            
-            StartCoroutine("fadeIn");
-        }      
+        if (Input.GetKeyDown(KeyCode.Keypad0) && !death && Time.timeScale!=0)
+        {
+            //StartCoroutine("fadeIn");
+            if (controller.isGrounded)
+            {
+                inairPause = false;
+            }
+            else
+            {
+                inairPause = true;
+            }
+            Time.timeScale = 0;
+            pause.SetActive(true);
+        }
+        else if (Input.GetKeyDown(KeyCode.Keypad0) && !death && Time.timeScale != 1)
+        {
+            //StartCoroutine("fadeIn");
+            pause.SetActive(false);
+            Time.timeScale = 1;
+            if(!inairPause)
+            {
+                animator.Play("Idle", -1, 0);
+            }
+            else
+            {
+                animator.Play("Saut_fall", -1, 0);
+            }
+            
+        }
+
+        Debug.Log("current state = " + animator.GetCurrentAnimatorClipInfo(0));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////
@@ -167,7 +204,7 @@ public class Character : MonoBehaviour
         Vector3 spawn;
         if (gb == gbF)
         {
-            decalage = 1;
+            decalage = 0.5f;
         }
 
 
@@ -221,7 +258,7 @@ public class Character : MonoBehaviour
     {
         mouvement.y = gravity * Time.deltaTime;
         animator.SetBool("ColisionTete", true);
-        Debug.Log("colisiontete = " + animator.GetBool("ColisionTete"));
+        //Debug.Log("colisiontete = " + animator.GetBool("ColisionTete"));
         animator.SetBool("ColisionTete", false);
     }
 
