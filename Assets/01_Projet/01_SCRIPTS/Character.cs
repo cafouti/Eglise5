@@ -12,7 +12,7 @@ public class Character : MonoBehaviour
     private float saut;
     private float masse;
     private float gravity;
-    private float energie = 0;
+    public float energie = 0;
     public float increment = 0.01f;
     public int nbPushMax = 30;
     private int nbPush = 0;
@@ -37,11 +37,14 @@ public class Character : MonoBehaviour
     public RectTransform curseur;
     private Vector2 xOffsetCurseur;
 
+    public Canvas ui;
     public float fadeTime;
     public Image blackFade;
     public Text titre;
     private bool menu_accueil = true;
-    public GameObject pause;
+    private bool pause = false;
+    private bool fin = true;
+
     public Transform respawnPoint;
     public Transform respawnPointStart;
     public Checkpoint checkpoint;
@@ -155,12 +158,10 @@ public class Character : MonoBehaviour
                 inairPause = true;
             }
             Time.timeScale = 0;
-            pause.SetActive(true);
         }
         else if (Input.GetKeyDown(KeyCode.Keypad0) && !death && Time.timeScale != 1)
         {
             //StartCoroutine("fadeIn");
-            pause.SetActive(false);
             Time.timeScale = 1;
             if(!inairPause)
             {

@@ -32,6 +32,7 @@ public class Tunnel : MonoBehaviour
             initSpeed = character.speed;
             character.speed = crouchSpeed;
             character.canTrans = false;
+            character.energie = 0.5f;
         }
     }
 

@@ -69,7 +69,7 @@ public class Zigouilleur : MonoBehaviour
             mouvement.x = 0;
         }
         
-        if((droite && mouvement.x < 0) || (!droite && mouvement.x > 0))
+        if((droite && mouvement.x > 0) || (!droite && mouvement.x < 0))
         {
             Rotate();
         }
