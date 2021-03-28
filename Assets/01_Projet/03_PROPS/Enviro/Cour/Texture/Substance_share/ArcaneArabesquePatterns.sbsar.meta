@@ -26,7 +26,7 @@ ScriptedImporter:
       lightmapFlags: 1
       enableInstancingVariants: 0
       doubleSidedGI: 0
-      customRenderQueue: -1
+      customRenderQueue: 2000
       texEnvs:
       - name: _BaseMap
         texture: {fileID: -3721406990452668752, guid: 12237464f77faf049a363158104c3345, type: 3}
