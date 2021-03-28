@@ -27,7 +27,7 @@ public class Checkpoint : MonoBehaviour
         hitboxPlancheRot = new Quaternion[gbPlanche.Length];
         hitboxPlancheScale = new Vector3[gbPlanche.Length];
 
-        for (int i = 0; i<gbPlanche.Length; i++)
+        for(int i = 0; i<gbPlanche.Length; i++)
         {
             scalePlanche[i] = gbPlanche[i].transform.localScale;
             planche[i] = gbPlanche[i].transform.position;
@@ -55,6 +55,10 @@ public class Checkpoint : MonoBehaviour
             zigouilleur[i] = gb.GetComponent<Zigouilleur>();
             zigouilleur[i].name = death.gameObject.name;
             zigouilleur[i].enabled = true;
+            zigouilleur[i].StopCoroutine("PerteVue");
+            zigouilleur[i].StopCoroutine("PerteAgro");
+            zigouilleur[i].poursuite = false;
+            zigouilleur[i].retour = false;
             death.Suppr();
         }
 
@@ -65,6 +69,7 @@ public class Checkpoint : MonoBehaviour
             pretreLumiere[i] = gb.GetComponent<PretreLumiere>();
             pretreLumiere[i].name = death.gameObject.name;
             pretreLumiere[i].enabled = true;
+            //pretreLumiere[i].transform.Rotate(0, -90, -90);
             death.Suppr();
         }
 
@@ -74,9 +79,13 @@ public class Checkpoint : MonoBehaviour
             gbPlanche[i].transform.localScale = scalePlanche[i];
             gbPlanche[i].transform.localRotation = plancheRot[i];
             Transform hitboxTransform = gbPlanche[i].GetComponentInChildren<Transform>();
-            hitboxTransform.position = hitboxPlanche[i];
-            hitboxTransform.localRotation = hitboxPlancheRot[i];
-            hitboxTransform.localScale = hitboxPlancheScale[i];
+            Vector3 pos = new Vector3(hitboxPlanche[i].x, hitboxPlanche[i].y, hitboxPlanche[i].z);
+            hitboxTransform.position = pos;
+            Quaternion rot = new Quaternion(hitboxPlancheRot[i].x, hitboxPlancheRot[i].y, hitboxPlancheRot[i].z, hitboxPlancheRot[i].w);
+            hitboxTransform.localRotation = rot;
+            Debug.Log("rotate = " + rot);
+            Vector3 scale = new Vector3(hitboxPlancheScale[i].x, hitboxPlancheScale[i].y, hitboxPlancheScale[i].z);
+            hitboxTransform.localScale = scale;
         }
     }
 

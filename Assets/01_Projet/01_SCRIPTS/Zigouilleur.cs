@@ -7,17 +7,17 @@ public class Zigouilleur : MonoBehaviour
     //////////////////////Variables//////////////////////////
     public float speed;
     public float masse;
-    private bool poursuite = false;
-    private bool retour = false;
+    public bool poursuite = false;
+    public bool retour = false;
     private float offsetx = 0.2f;
-    private bool droite;
+    public bool droite;
     private bool startDroite = false;
     private bool canMove = true;
 
     private CharacterController controller;    
     private Vector3 mouvement;
     private BoxCollider detectionZone;
-    private Transform player;
+    private Transform player = null;
 
     private Vector3 start;
     private Quaternion startRot; 
@@ -26,21 +26,29 @@ public class Zigouilleur : MonoBehaviour
     private Animator animator;
 
     ///////////////////////Initialisation/////////////////////
+
+
+    void Awake()
+    {
+        StopAllCoroutines();
+    }
     void Start()
     {
-        if (transform.localRotation.y == 0)
-        {
-            startDroite = true;
-            droite = startDroite;
-        }
-        
+        startDroite = droite;
         start = transform.position;
         startRot = transform.localRotation;
         controller = gameObject.GetComponent<CharacterController>();
         detectionZone = GetComponent<BoxCollider>();
         animator = GetComponent<Animator>();
         animator.speed = 1;
+        mouvement.x = 0;
+        poursuite = false;
+        StopCoroutine("PerteVue");
+        StopCoroutine("PerteAgro");
+        StopAllCoroutines();
         animator.Play("EO1_Idle");
+        player = null;
+        Debug.Log("Respawn poursuite = " + poursuite);       
     }
 
     ///////////////////////Boucle/////////////////////
@@ -69,7 +77,7 @@ public class Zigouilleur : MonoBehaviour
             mouvement.x = 0;
         }
         
-        if((droite && mouvement.x > 0) || (!droite && mouvement.x < 0))
+        if((droite && mouvement.x < 0) || (!droite && mouvement.x > 0))
         {
             Rotate();
         }
@@ -141,16 +149,19 @@ public class Zigouilleur : MonoBehaviour
     /////////////////////////Trigger/////////////////////
 
     private void OnTriggerEnter(Collider other)
-    {
-        
+    {        
         if(other.gameObject.name == "Fille(Clone)" || other.gameObject.name == "Monstre(Clone)")
         {
-            player = other.gameObject.transform;
-            poursuite = true;
-            StopCoroutine("PerteVue");
-            StopCoroutine("PerteAgro");
-            animator.Play("EO1_Course");
-            retour = false;
+            if (!other.gameObject.GetComponentInParent<Character>().death)
+            {
+                player = other.gameObject.transform;
+                poursuite = true;
+                Debug.Log("nique ta race");
+                StopCoroutine("PerteVue");
+                StopCoroutine("PerteAgro");
+                animator.Play("EO1_Course");
+                retour = false;
+            }                
         }
     }
 
@@ -178,9 +189,10 @@ public class Zigouilleur : MonoBehaviour
     IEnumerator PerteVue()
     {
         yield return new WaitForSeconds(1);
+        Debug.Log("nique ta grande daronne");
         poursuite = false;
         player = null;
-        StartCoroutine(PerteAgro());
+        StartCoroutine("PerteAgro");
     }
 
     IEnumerator PerteAgro()

@@ -16,8 +16,9 @@ public class PlancheDestruction : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.name == "Monstre(Clone)")
+        if (other.gameObject.name == "Monstre(Clone)" && !other.gameObject.GetComponentInParent<Character>().death)
         {
+            other.gameObject.GetComponent<AudioSource>().Play();
             Destroy(planche);
         }
     }
@@ -29,7 +30,7 @@ public class PlancheDestruction : MonoBehaviour
     }
 
     public void Suppr()
-    {
+    {        
         Destroy(this.transform.parent.gameObject);
     }
 }

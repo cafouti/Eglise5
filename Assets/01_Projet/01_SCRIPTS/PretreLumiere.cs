@@ -81,6 +81,7 @@ public class PretreLumiere : MonoBehaviour
     public PretreLumiere Remake()
     {
         PretreLumiere newZig = Instantiate(this, start, startRot);
+        Debug.Log("pretre créé =" + newZig);
         return newZig;
     }
 

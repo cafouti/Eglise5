@@ -330,7 +330,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2904950614958098074}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.2820001, z: 0}
+  m_LocalPosition: {x: 0, y: 1.516, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 8150314941501098481}
@@ -463,14 +463,14 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3460484045887650956}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 14909f375da3c88439d77814abc1382c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   rotationSpeed: 10
-  angleMax: 20
-  angleVision: 10
+  angleMax: 45
+  angleVision: 15
   initRotY: 270
   lookUpStart: {fileID: 2774926246569923958}
   lookUpStop: {fileID: 8150314941501098481}
@@ -746,7 +746,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 8290782892783832528, guid: db3d16330d6db344182fb6312acd6c8f, type: 3}
+  - {fileID: 2100000, guid: 3b3b00610c60e574c8b3cf6974a926b0, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -893,7 +893,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 8290782892783832528, guid: db3d16330d6db344182fb6312acd6c8f, type: 3}
+  - {fileID: 2100000, guid: e6a0353816ef2a84181e24c6d885c348, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1179,8 +1179,8 @@ Light:
   m_Color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
   m_Intensity: 46.28
   m_Range: 5.4
-  m_SpotAngle: 24.564777
-  m_InnerSpotAngle: 21.80208
+  m_SpotAngle: 45.89701
+  m_InnerSpotAngle: 42.09255
   m_CookieSize: 10
   m_Shadows:
     m_Type: 1

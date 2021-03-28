@@ -34,21 +34,21 @@ public class Character : MonoBehaviour
     private GameObject character;
     public CharacterController controller;
     public CameraFollow cam;
-    public RectTransform curseur;
-    private Vector2 xOffsetCurseur;
+    public Image fondBarre;
+    public Image energieBarre;
 
     public Canvas ui;
     public float fadeTime;
     public Image blackFade;
-    public Text titre;
     private bool menu_accueil = true;
     private bool pause = false;
     private bool fin = true;
+    public UI display;
 
     public Transform respawnPoint;
     public Transform respawnPointStart;
     public Checkpoint checkpoint;
-    private bool death = false;
+    public bool death = true;
 
     public GameObject gbF;
     public GameObject gbM;
@@ -56,45 +56,69 @@ public class Character : MonoBehaviour
     private float[] fille;
     private float[] monstre;
 
-    private Animator animator;
+    public ParticleSystem smoke;
+
+    public Animator animator;
+
+    private AudioSource plancheDestroy;
 
     /////////////////////////////////////////////////////////////////////////////////////////////
 
     // Start is called before the first frame update
     void Start()
     {
-        xOffsetCurseur = curseur.anchoredPosition ;
         fille = new float[4] { speedF, sautF, masseF, gravityF };
         monstre = new float[4] { speedM, sautM, masseM, gravityM };
         ChangeGB(gbF, 1, fille);
         energie = 1;
-        Vector2 move = new Vector2(energie, 0);
-        curseur.anchoredPosition = xOffsetCurseur + 75 * move;
+        display.accueil_state = true;
+        fadeTime *= 1.5f;
         StartCoroutine("fadeOut");
+        fadeTime /= 1.5f;
+        plancheDestroy = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
     void Update()
     {
         //Recuperation de la valeur de la touche de deplacement
-        float x = Input.GetAxis("Horizontal");       
+        float x = Input.GetAxis("Horizontal");   
+        
+        if(!display.fin_state)
+        {
+            if (display.accueil_state && Input.GetButtonDown("Pause"))
+            {
+                display.accueil_state = false;
+                death = false;
+            }
+            else if (!display.accueil_state && !display.pause_state && Input.GetButtonDown("Pause"))
+            {
+                display.pause_state = true;
+            }
+            else if (display.pause_state && Input.GetButtonDown("Pause"))
+            {
+                display.pause_state = false;
+            }
+        }
+        
 
-        if (!death)
+
+        if (!death && !display.fin_state)
         {
             mouvement.x = x * speed;
             animator.speed = 1;
 
-            if (Input.GetJoystickNames().Length > 0)
+            /*if (Input.GetJoystickNames().Length > 0)
             {
                 Debug.Log("controller connecté");
             }
             else
             {
                 Debug.Log("controller non connecté");
-            }
+            }*/
 
-                //Maintien au sol
-                if (controller.isGrounded && mouvement.y < 0)
+            //Maintien au sol
+            if (controller.isGrounded && mouvement.y < 0)
             {
                 mouvement.y = masse;                
             }
@@ -141,11 +165,33 @@ public class Character : MonoBehaviour
                 animator.SetBool("InAir", false);
             }
         }
+        else if(display.fin_state)
+        {
+            Energie();
+            animator.SetBool("Walking", true);
+            mouvement.x = speed;
+            //Gestion gravité
+            mouvement.y += gravity * Time.deltaTime;
+
+            if (!controller.isGrounded && animator)
+            {
+                animator.SetBool("InAir", true);
+
+            }
+            else
+            {
+                animator.SetBool("InAir", false);
+            }
+            //Application mouvement
+            controller.Move(mouvement * Time.deltaTime);
+        }
         else
         {
             animator.speed = 0;
         }
         
+
+        /*///Gestion respawn
         if (Input.GetKeyDown(KeyCode.Keypad0) && !death && Time.timeScale!=0)
         {
             //StartCoroutine("fadeIn");
@@ -172,9 +218,9 @@ public class Character : MonoBehaviour
                 animator.Play("Saut_fall", -1, 0);
             }
             
-        }
+        }*/
 
-        Debug.Log("current state = " + animator.GetCurrentAnimatorClipInfo(0));
+        //Debug.Log("current state = " + animator.GetCurrentAnimatorClipInfo(0));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////
@@ -202,6 +248,11 @@ public class Character : MonoBehaviour
 
     void ChangeGB(GameObject gb, float decalage, float[] stats)
     {
+        if(smoke)
+        {
+            smoke.Play();
+        }
+
         Vector3 spawn;
         if (gb == gbF)
         {
@@ -232,6 +283,7 @@ public class Character : MonoBehaviour
         saut = stats[1];
         masse = stats[2];
         gravity = stats[3];
+        smoke = character.GetComponentInChildren<ParticleSystem>();
 
         if(character.GetComponent<Animator>())
         {
@@ -239,8 +291,9 @@ public class Character : MonoBehaviour
         }        
 
         if(!droite)
-        {
+        {            
             character.transform.Rotate(0, 180, 0);
+            //smoke.transform.Rotate(0,-180,0);
             droite = false;
         }
     }
@@ -276,11 +329,13 @@ public class Character : MonoBehaviour
         if (mouvement.x < 0 && droite)
         {
             character.transform.Rotate(0, 180, 0);
+            //smoke.transform.Rotate(0, -180, 0);
             droite = false;
         }
         else if (mouvement.x > 0 && !droite)
         {
             character.transform.Rotate(0, -180, 0);
+            //smoke.transform.Rotate(0, 180, 0);
             droite = true;
         }
     }
@@ -290,10 +345,9 @@ public class Character : MonoBehaviour
         if(!monstreEtat)
         {
             energie -= increment * Time.deltaTime;
-        }        
-        
-        Vector2 move = new Vector2(energie, 0);
-        curseur.anchoredPosition = xOffsetCurseur + 75 * move;
+        }
+
+        energieBarre.fillAmount = energie ;
 
         if (energie <= 0 && !monstreEtat)
         {
@@ -312,7 +366,15 @@ public class Character : MonoBehaviour
     {
         blackFade.CrossFadeAlpha(0,fadeTime,false);
         yield return new WaitForSeconds(fadeTime);
-        death = false;
+        if(!display.accueil_state)
+        {
+
+            death = false;
+        }
+        else
+        {
+            death = true;
+        }
     }
 
     IEnumerator fadeIn()
@@ -327,7 +389,13 @@ public class Character : MonoBehaviour
 
     void Respawn(Transform destination)
     {
+        smoke.Play();
         controller.transform.position = destination.position;
         checkpoint.ResetAssets();
+    }
+
+    void PlancheDestroyed()
+    {
+        plancheDestroy.Play();
     }
 }
